@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruthSeeker - Exposing Fake News with AI</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--accent-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .section-title p {
+            color: #7f8c8d;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 50px;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Detection Section */
+        .detection {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .detection-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .detection-content {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .detection-content h2 {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .detection-content p {
+            margin-bottom: 30px;
+            color: #555;
+        }
+        
+        .detection-form {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        .analyze-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        .analyze-button:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Results Section */
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: var(--light-color);
+        }
+        
+        .results.visible {
+            display: block;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .verdict {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .verdict.true {
+            color: var(--success-color);
+        }
+        
+        .verdict.fake {
+            color: var(--secondary-color);
+        }
+        
+        .verdict.unclear {
+            color: var(--warning-color);
+        }
+        
+        .confidence {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--dark-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .result-details h3 {
+            margin: 20px 0 10px;
+            color: var(--primary-color);
+        }
+        
+        .result-details ul {
+            margin-left: 20px;
+        }
+        
+        .result-details li {
+            margin-bottom: 8px;
+        }
+        
+        /* News Section */
+        .news {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .news-card {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .news-image {
+            height: 200px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .news-content {
+            padding: 20px;
+        }
+        
+        .news-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .news-tag.fake {
+            background-color: var(--secondary-color);
+        }
+        
+        .news-tag.true {
+            background-color: var(--success-color);
+        }
+        
+        .news-content h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .news-content p {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* About Section */
+        .about {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .about-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-image img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-content {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-content h2 {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .about-content p {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .tech-item {
+            background-color: var(--light-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #bdc3c7;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
+            font-size: 14px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-title h2 {
+                font-size: 30px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-search"></i>
+                Truth<span>Seeker</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#detect">Detect Fake News</a></li>
+                    <li><a href="#news">Recent Analysis</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Exposing the Truth with AI-Powered Analysis</h1>
+            <p>Our advanced natural language processing technology helps you identify fake news and misinformation with unprecedented accuracy.</p>
+            <a href="#detect" class="cta-button">Analyze News Now</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>How Our Technology Works</h2>
+                <p>We combine multiple advanced techniques to detect misinformation with high accuracy</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3>Natural Language Processing</h3>
+                    <p>Analyzes linguistic patterns, sentiment, and writing style to identify potential misinformation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3>Source Verification</h3>
+                    <p>Cross-references information with trusted sources and checks the credibility of publishers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Pattern Recognition</h3>
+                    <p>Identifies common characteristics of fake news stories using machine learning models.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detection Section -->
+    <section class="detection" id="detect">
+        <div class="container detection-container">
+            <div class="detection-content">
+                <h2>Detect Fake News in Real-Time</h2>
+                <p>Paste any news article or text below and our advanced AI will analyze it for signs of misinformation, bias, or manipulation.</p>
+                <p>Our system evaluates multiple factors including source credibility, linguistic patterns, factual consistency, and more to provide you with a comprehensive assessment.</p>
+            </div>
+            <div class="detection-form">
+                <form id="newsForm">
+                    <div class="form-group">
+                        <label for="newsUrl">News Article URL (optional)</label>
+                        <input type="url" id="newsUrl" placeholder="https://example.com/news-article">
+                    </div>
+                    <div class="form-group">
+                        <label for="newsText">Paste News Text Here</label>
+                        <textarea id="newsText" placeholder="Paste the text of the news article you want to analyze..." required></textarea>
+                    </div>
+                    <button type="submit" class="analyze-button">Analyze for Fake News</button>
+                </form>
+                
+                <div class="results" id="results">
+                    <div class="result-header">
+                        <div class="verdict" id="verdict">Likely Fake</div>
+                        <div class="confidence" id="confidence">87% Confidence</div>
+                    </div>
+                    <div class="result-details">
+                        <h3>Analysis Summary</h3>
+                        <p id="summary">Our analysis indicates this article contains several characteristics commonly found in misinformation campaigns.</p>
+                        
+                        <h3>Key Indicators</h3>
+                        <ul id="indicators">
+                            <li>Emotional language score: 92/100 (very high)</li>
+                            <li>Source credibility: Low (unknown publisher)</li>
+                            <li>Fact-check discrepancies: 4 major claims unverified</li>
+                            <li>Writing style matches known fake news patterns</li>
+                        </ul>
+                        
+                        <h3>Suggested Fact-Checks</h3>
+                        <ul id="factchecks">
+                            <li><a href="#" target="_blank">Snopes analysis of similar claims</a></li>
+                            <li><a href="#" target="_blank">Reuters Fact Check report</a></li>
+                            <li><a href="#" target="_blank">AP News verification</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="news" id="news">
+        <div class="container">
+            <div class="section-title">
+                <h2>Recently Analyzed News</h2>
+                <p>See examples of news stories we've recently evaluated with our system</p>
+            </div>
+            <div class="news-grid">
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="news-content">
+                        <span class="news-tag fake">Fake News</span>
+                        <h3>"Study Shows Vaccines Cause Autism" Claims Debunked</h3>
+                        <p>Analysis revealed this article misrepresents scientific data and uses emotionally manipulative language.</p>
+                        <div class="news-meta">
+                            <span>2 days ago</span>
+                            <span>94% fake</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://images.unsplash.com/photo-1495020689067-958852a7765e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="news-content">
+                        <span class="news-tag true">Verified</span>
+                        <h3>Climate Change Report Confirmed by Multiple Sources</h3>
+                        <p>Our verification found this reporting to be accurate and well-sourced from reputable scientific institutions.</p>
+                        <div class="news-meta">
+                            <span>1 week ago</span>
+                            <span>98% true</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="news-content">
+                        <span class="news-tag fake">Misleading</span>
+                        <h3>Political Candidate's Statement Taken Out of Context</h3>
+                        <p>This article selectively edits quotes to change their meaning, a common misinformation technique.</p>
+                        <div class="news-meta">
+                            <span>3 days ago</span>
+                            <span>76% fake</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container about-container">
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="AI Technology">
+            </div>
+            <div class="about-content">
+                <h2>About Our Technology</h2>
+                <p>TruthSeeker was developed by a team of AI researchers, journalists, and fact-checkers to combat the growing problem of online misinformation.</p>
+                <p>Our system uses state-of-the-art natural language processing models trained on millions of verified news articles and known fake news examples to identify patterns and markers of misinformation.</p>
+                <p>Unlike simple fact-checking, our technology analyzes content at multiple levels including linguistic patterns, source credibility, emotional manipulation techniques, and factual consistency.</p>
+                
+                <h3 style="margin-top: 30px;">Technologies Used:</h3>
+                <div class="tech-list">
+                    <span class="tech-item">BERT NLP</span>
+                    <span class="tech-item">Transformer Models</span>
+                    <span class="tech-item">Sentiment Analysis</span>
+                    <span class="tech-item">Network Analysis</span>
+                    <span class="tech-item">Fact Extraction</span>
+                    <span class="tech-item">Credibility Scoring</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <h3>TruthSeeker</h3>
+                    <p>Using advanced AI to combat misinformation and promote media literacy.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#detect">Fake News Detection</a></li>
+                        <li><a href="#news">Recent Analysis</a></li>
+                        <li><a href="#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">How to Spot Fake News</a></li>
+                        <li><a href="#">Media Literacy Guide</a></li>
+                        <li><a href="#">Fact-Checking Sources</a></li>
+                        <li><a href="#">Research Papers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> contact@truthseeker.ai</li>
+                        <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Truth Ave, Fact City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 TruthSeeker. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for fake news detection form -->
+    <script>
+        document.getElementById('newsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const button = document.querySelector('.analyze-button');
+            button.textContent = 'Analyzing...';
+            button.disabled = true;
+            
+            // Simulate API call with timeout
+            setTimeout(function() {
+                // Show results
+                document.getElementById('results').classList.add('visible');
+                
+                // Reset button
+                button.textContent = 'Analyze for Fake News';
+                button.disabled = false;
+                
+                // Generate random results for demo
+                const randomVerdict = Math.random();
+                const verdictElement = document.getElementById('verdict');
+                const confidenceElement = document.getElementById('confidence');
+                
+                if (randomVerdict < 0.4) {
+                    verdictElement.textContent = 'Likely Fake';
+                    verdictElement.className = 'verdict fake';
+                    confidenceElement.textContent = Math.floor(Math.random() * 20 + 75) + '% Confidence';
+                    document.getElementById('summary').textContent = 'Our analysis indicates this article contains several characteristics commonly found in misinformation campaigns.';
+                } else if (randomVerdict < 0.7) {
+                    verdictElement.textContent = 'Likely True';
+                    verdictElement.className = 'verdict true';
+                    confidenceElement.textContent = Math.floor(Math.random() * 20 + 75) + '% Confidence';
+                    document.getElementById('summary').textContent = 'This article appears to be credible, with multiple verifiable sources and factual reporting.';
+                } else {
+                    verdictElement.textContent = 'Unclear';
+                    verdictElement.className = 'verdict unclear';
+                    confidenceElement.textContent = Math.floor(Math.random() * 30 + 50) + '% Confidence';
+                    document.getElementById('summary').textContent = 'Our analysis couldn\'t determine with high confidence whether this article is completely accurate. Some claims may need further verification.';
+                }
+                
+                // Scroll to results
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
